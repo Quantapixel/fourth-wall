@@ -10,7 +10,7 @@ import random
 from dataclasses import dataclass, field
 from typing import Any
 
-from .config import CLUE_TYPES, STATUSES, MissionConfig
+from .config import STATUSES, MissionConfig
 from .world import DIRS, RUBBLE, Cell, Grid, bearing_deg, dist, generate_terrain, parse_grid
 
 # EVE's beacon model per status. The agent is given the same table as its sensor model.
@@ -129,8 +129,8 @@ class Environment:
                 types.append("debris")
             if self.eve_status in ("dormant", "active"):
                 types.append("plant_residue")
-            while len(types) < n:
-                types.append(self.rng.choice(CLUE_TYPES))
+            while len(types) < n:  # filler clues carry no status information
+                types.append(self.rng.choice(("hover_tracks", "memory_chip", "debris")))
             clues = []
             for t in types[:n]:
                 if t == "hover_tracks":
@@ -157,8 +157,7 @@ class Environment:
             return {"freshness": "fresh" if fresh else "weathered",
                     "note": "White hull fragments, still warm." if fresh else "Old corroded scrap."}
         if clue.type == "plant_residue":
-            near = dist(clue.position, self.eve_pos) <= 3
-            return {"near_eve": near, "note": "Soil disturbed around a seedling's root ball."}
+            return {"note": "Soil disturbed around a seedling's root ball."}
         if clue.type == "memory_chip":
             truth = self._quadrant(self.eve_pos)
             quads = ["NW", "NE", "SW", "SE"]
