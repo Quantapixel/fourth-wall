@@ -1,0 +1,44 @@
+# Sample mission: a mid-sized wasteland with two decoys, noisy sensors and a tight battery.
+mission:
+  name: sample_mission
+  seed: 14
+
+map:                       # procedural map; use `grid:` instead for a hand-drawn one
+  width: 40
+  height: 26
+  obstacle_density: 0.15   # trash-pile walls (impassable)
+  rubble_density: 0.12     # rubble cells cost more battery and time
+  chargers: 3              # base charger at start + 2 solar pads
+
+start: [1, 1]
+
+eve:
+  position: null           # null = chosen from the seed (hidden from the agent)
+  status: null             # active | dormant | damaged, or null for seeded
+
+initial_signal:
+  bearing_deg: null        # null = derived from the simulator's first noisy reading
+  strength: null
+  timestamp: "2805-07-04T06:12:00Z"
+  coordinates: null        # optional rough fix [x, y]
+  uncertainty: 6
+
+resources:
+  battery: 110
+  time_limit: 450
+  recharge_rate: 30
+  costs:      {move: 1, move_rubble: 3, scan_signal: 2, scan_area: 3, recharge: 0, wait: 0}
+  time_costs: {move: 1, move_rubble: 2, scan_signal: 1, scan_area: 2, recharge: 1, wait: 1}
+
+sensors:
+  signal_range: 40
+  bearing_noise_deg: 18
+  strength_noise: 0.05
+  scan_radius: 2
+  scan_detect_prob: 0.95
+
+clues:
+  count: 6                 # placed from the seed; or give `list: [{type, position}]`
+
+decoys:
+  count: 2                 # spoofed beacons with EVE's signature; or `list: [{position, power}]`

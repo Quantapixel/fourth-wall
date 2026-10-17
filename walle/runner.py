@@ -8,6 +8,7 @@ from typing import Any, Callable
 from .agent import BeliefAgent
 from .config import MissionConfig
 from .env import Environment
+from .viz import sparse_heat
 
 
 def _jsonable(o: Any) -> Any:
@@ -41,8 +42,11 @@ def run_mission(cfg: MissionConfig, agent_factory: Callable[[dict], Any] = Belie
     briefing = env.briefing()
     agent = agent_factory(briefing)
     trace = Trace()
+    has_belief = hasattr(agent, "belief")
     trace.log({"step": 0, "event": "briefing", "briefing": briefing,
-               "belief": agent.belief.summary() if hasattr(agent, "belief") else None})
+               "belief": agent.belief.summary() if has_belief else None})
+    heat = [sparse_heat(agent.belief.location()) if has_belief else None]
+    heat_before_fix = heat[0]
 
     step = 0
     while not env.done and step < max_steps:
@@ -63,10 +67,14 @@ def run_mission(cfg: MissionConfig, agent_factory: Callable[[dict], Any] = Belie
             "observation": obs,
             "notes": notes,
             "strategy_changes": changes,
-            "belief": agent.belief.summary() if hasattr(agent, "belief") else None,
+            "belief": agent.belief.summary() if has_belief else None,
         })
+        heat.append(sparse_heat(agent.belief.location()) if has_belief else None)
+        if has_belief and not agent.belief.eve_fix:
+            heat_before_fix = heat[-1]
     if not env.done:  # safety net, should not happen
         env.step({"type": "end", "reason": "step_limit"})
 
     return {"cfg": cfg, "env": env, "agent": agent, "trace": trace, "briefing": briefing,
-            "outcome": env.outcome, "steps": step}
+            "outcome": env.outcome, "steps": step,
+            "heat": heat, "heat_before_fix": heat_before_fix}
