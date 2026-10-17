@@ -10,7 +10,7 @@ import numpy as np
 CLUE_CHAR = {"hover_tracks": "t", "debris": "d", "plant_residue": "p", "memory_chip": "m"}
 MODE_COLOR = {
     "SEARCH": "#3b82f6", "INVESTIGATE": "#a855f7", "RECHARGE": "#f59e0b",
-    "RETURN": "#64748b", "RENDEZVOUS": "#10b981", "DONE": "#10b981", None: "#3b82f6",
+    "RETURN": "#64748b", "RENDEZVOUS": "#10b981", "FINAL_APPROACH": "#ef4444", "DONE": "#10b981", None: "#3b82f6",
 }
 SHADES = " .:-=+*%@"
 

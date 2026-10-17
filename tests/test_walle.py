@@ -3,6 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from walle.agent import AgentParams, BeliefAgent
 from walle.belief import Belief
 from walle.benchmark import TIERS
 from walle.cli import main
@@ -131,6 +132,16 @@ class AgentTests(unittest.TestCase):
             r = run_mission(from_dict({"mission": {"seed": 2000 + seed}, **TIERS["extreme"]}))
             self.assertNotEqual(r["outcome"], "stranded", f"seed {2000 + seed}")
 
+    def test_final_approach_beats_retreating(self):
+        # Extreme seed 1036: EVE is pinned down when the clock forces a turn back.
+        cfg = {"mission": {"seed": 1036}, **TIERS["extreme"]}
+        r = run_mission(from_dict(cfg))
+        self.assertEqual(r["outcome"], "rendezvous")
+        modes = [c["to"] for c in r["agent"].strategy_changes if c["kind"] == "mode"]
+        self.assertIn("FINAL_APPROACH", modes)
+        timid = run_mission(from_dict(cfg), lambda b: BeliefAgent(b, AgentParams(final_approach=False)))
+        self.assertNotEqual(timid["outcome"], "rendezvous")
+
     def test_trace_has_reasoning_for_every_step(self):
         r = run_mission(from_dict(TINY))
         for rec in r["trace"].records[1:]:
@@ -144,11 +155,14 @@ class CliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             self.assertEqual(main(["run", str(ROOT / "configs/sample_mission.yaml"), "--out", d]), 0)
             for f in ("trace.jsonl", "report.json", "report.md", "map.txt", "path.svg", "replay.html",
-                      "strategy_frames.txt"):
+                      "cinema.html", "strategy_frames.txt"):
                 self.assertTrue((Path(d) / f).stat().st_size > 0, f)
             rep = json.loads((Path(d) / "report.json").read_text())
             for key in ("evidence", "assessment", "recommended_next_step", "strategy_changes"):
                 self.assertIn(key, rep)
+            cinema = (Path(d) / "cinema.html").read_text()
+            self.assertNotIn("__DATA__", cinema)
+            self.assertNotIn("<script src", cinema)  # fully self-contained, works offline
 
 
 if __name__ == "__main__":

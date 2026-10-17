@@ -5,6 +5,7 @@ import argparse
 import json
 from pathlib import Path
 
+from .cinema import cinema_html
 from .config import load_config
 from .report import build_report, report_markdown
 from .runner import run_mission
@@ -32,6 +33,7 @@ def write_outputs(result: dict, out: Path) -> dict:
         (out / "strategy_frames.txt").write_text(strategy_frames(result))
     (out / "path.svg").write_text(svg(result))
     (out / "replay.html").write_text(replay_html(result, rep))
+    (out / "cinema.html").write_text(cinema_html(result, rep))
     return rep
 
 
@@ -48,7 +50,10 @@ def cmd_run(args) -> int:
     print(f"  next step: {rep['recommended_next_step']}")
     if args.ascii:
         print((out / "map.txt").read_text())
-    print(f"  outputs written to {out}/")
+    print(f"  outputs written to {out}/  (open cinema.html for the animated replay)")
+    if args.open:
+        import webbrowser
+        webbrowser.open((out / "cinema.html").resolve().as_uri())
     return 0
 
 
@@ -56,6 +61,13 @@ def cmd_bench(args) -> int:
     from .benchmark import run_benchmark
     run_benchmark(n=args.n, seed=args.seed, agents=args.agents.split(","), out=Path(args.out),
                   factories=agent_factories())
+    return 0
+
+
+def cmd_site(args) -> int:
+    from .site import build_site
+    built = build_site(Path(args.runs), Path(args.out), args.repo)
+    print(f"site with {len(built)} missions written to {args.out}/")
     return 0
 
 
@@ -67,6 +79,7 @@ def main(argv=None) -> int:
     r.add_argument("--out", help="output directory (default runs/<mission name>)")
     r.add_argument("--agent", default="belief", choices=["belief", "greedy", "random"])
     r.add_argument("--ascii", action="store_true", help="print the final ASCII map")
+    r.add_argument("--open", action="store_true", help="open the cinematic replay in a browser")
     r.set_defaults(func=cmd_run)
     b = sub.add_parser("bench", help="generalisation benchmark across random missions")
     b.add_argument("--n", type=int, default=60, help="missions per difficulty tier")
@@ -74,5 +87,10 @@ def main(argv=None) -> int:
     b.add_argument("--agents", default="belief,greedy,random")
     b.add_argument("--out", default="runs/benchmark")
     b.set_defaults(func=cmd_bench)
+    s = sub.add_parser("site", help="build a static showcase site from runs/")
+    s.add_argument("--runs", default="runs")
+    s.add_argument("--out", default="site")
+    s.add_argument("--repo", default="https://github.com/Quantapixel/fourth-wall")
+    s.set_defaults(func=cmd_site)
     args = ap.parse_args(argv)
     return args.func(args)

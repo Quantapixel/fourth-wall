@@ -10,6 +10,9 @@ A classical, belief-driven planner:
   scanning, WALL-E must still be able to reach a charger with a safety margin.
 * **Triangulation** – re-scans the beacon after moving a baseline distance, since
   bearings from different positions intersect at EVE (and disagree for decoys).
+* **Final approach** – when the clock says "turn back", WALL-E weighs going home against
+  a last run at the belief peak. If P(sighting) from one more area scan clears a threshold
+  and the trip fits the remaining time and battery, he commits instead of retreating.
 """
 from __future__ import annotations
 
@@ -21,8 +24,8 @@ import numpy as np
 from .belief import Belief
 from .world import Cell, Grid, dist, parse_grid
 
-SEARCH, INVESTIGATE, RECHARGE, RETURN, RENDEZVOUS, DONE = (
-    "SEARCH", "INVESTIGATE", "RECHARGE", "RETURN", "RENDEZVOUS", "DONE")
+SEARCH, INVESTIGATE, RECHARGE, RETURN, RENDEZVOUS, DONE, FINAL = (
+    "SEARCH", "INVESTIGATE", "RECHARGE", "RETURN", "RENDEZVOUS", "DONE", "FINAL_APPROACH")
 
 
 @dataclass
@@ -35,6 +38,8 @@ class AgentParams:
     travel_scale: float = 12.0          # score = mass / (1 + cost / travel_scale)
     explore_bonus: float = 0.01         # small pull towards unscanned ground (clues)
     switch_ratio: float = 1.35          # hysteresis for changing targets
+    final_approach: bool = True         # gamble on the belief peak instead of retreating when time runs out
+    commit_prob: float = 0.25           # minimum P(sighting) to commit to a final approach
 
 
 class BeliefAgent:
@@ -228,10 +233,28 @@ class BeliefAgent:
                 if step:
                     return step, f"Heading to charger {goal} ({battery_home} battery needed, have {self.battery:.0f}).", decision
 
-        # 3. Turn back when the clock says so.
-        if self.mode != RETURN and time_left <= self.time_to_base.get(self.pos, 0) + self.p.time_margin:
+        # 3. Turn back when the clock says so -- unless a final approach on the belief peak is worth more.
+        turn_back = time_left <= self.time_to_base.get(self.pos, 0) + self.p.time_margin
+        dash = None
+        if self.mode not in (RETURN, FINAL, RECHARGE) and self.p.final_approach:
+            dash = self._final_approach()
+            # Last call: the peak is only just reachable before the deadline, so go now or never.
+            if dash and dash[2]["slack"] <= self.p.time_margin + 2:
+                turn_back = True
+        if self.mode not in (RETURN, FINAL) and turn_back:
             self.resume_mode = self.mode
-            self._set_mode(RETURN, f"{time_left} time left, base is {self.time_to_base.get(self.pos)} away")
+            if dash:
+                self.target, p_find, info = dash
+                self._set_mode(FINAL, f"{time_left} time left, base is {self.time_to_base.get(self.pos)} away; "
+                                      f"a run to {self.target} finds EVE with P={p_find:.0%} "
+                                      f"(travel {info['time']} time / {info['battery']} battery), retreating finds her with P=0")
+            else:
+                self._set_mode(RETURN, f"{time_left} time left, base is {self.time_to_base.get(self.pos)} away")
+        if self.mode == FINAL:
+            step = self._final_step(decision)
+            if step:
+                return step[0], step[1], decision
+            self._set_mode(RETURN, "final approach found nothing and no other peak is reachable in time")
         if self.mode == RETURN:
             if self.pos == self.start:
                 self._set_mode(DONE, "back at base")
@@ -301,6 +324,45 @@ class BeliefAgent:
         if step is None:
             return {"type": "scan_area"}, "Target unreachable; scanning here.", decision
         return step, f"Moving to {target} ({info.get('mass', 0):.0%} belief mass, cost {info.get('travel_cost')}).", decision
+
+    def _final_approach(self) -> tuple[Cell, float, dict[str, Any]] | None:
+        """Best last-chance target: (cell, P(sighting), costs), or None if nothing clears commit_prob.
+
+        Only the trip out, one area scan and two closing moves have to fit: the mission ends at
+        EVE, and a failed run still leaves WALL-E with battery (he just doesn't get home in time).
+        """
+        time_left = self.time_limit - self.time
+        mass = self.belief.mass_within(self.radius)
+        detect = self.belief.sensors["scan_detect_prob"]
+        need_t = self.tcosts["scan_area"] + 2 * self.tcosts["move_rubble"]
+        need_b = self.costs["scan_area"] + 2 * self.costs["move_rubble"] + 1
+        bcost = self.grid.dijkstra(self.pos)
+        cands = sorted(bcost, key=lambda c: -mass[c[1], c[0]] / (1.0 + bcost[c] / self.p.travel_scale))
+        for c in cands[:40]:
+            p_find = float(mass[c[1], c[0]]) * detect
+            if p_find < self.p.commit_prob:
+                break
+            path = self.grid.astar(self.pos, c) if c != self.pos else [c]
+            if not path:
+                continue
+            t, b = self.tgrid.path_cost(path), self.grid.path_cost(path)
+            if t + need_t < time_left and b + need_b <= self.battery:
+                return c, p_find, {"time": t, "battery": b, "slack": time_left - t - need_t}
+        return None
+
+    def _final_step(self, decision: dict[str, Any]) -> tuple[dict[str, Any], str] | None:
+        if self.target is None:
+            dash = self._final_approach()
+            if dash is None:
+                return None
+            self.target = dash[0]
+            self._change("target", list(self.target), f"next final-approach peak, P(sighting)={dash[1]:.0%}")
+        decision["target"] = list(self.target)
+        if self.pos == self.target:
+            self.target = None
+            return {"type": "scan_area"}, "Final approach: scanning the belief peak."
+        step = self._step_toward(self.target)
+        return (step, f"Final approach to {self.target}: no time to get home, so this run is the best shot.") if step else None
 
     # --- final assessment ----------------------------------------------------
     def assessment(self) -> dict[str, Any]:

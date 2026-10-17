@@ -1,0 +1,23 @@
+# Extreme-tier mission (benchmark seed 1036): big map, 70 battery, 220 ticks, 3 decoys.
+# Without the final-approach rule the agent pins EVE down to 98% but turns for home
+# because the clock says so. With it, WALL-E weighs P(sighting) against retreating and
+# makes a last run on the belief peak.
+mission: {name: last_light, seed: 1036}
+
+map:
+  width: 48
+  height: 32
+  obstacle_density: 0.16
+  rubble_density: 0.15
+  chargers: 3
+
+resources:
+  battery: 70
+  time_limit: 220
+
+sensors:
+  bearing_noise_deg: 25
+  strength_noise: 0.07
+
+clues: {count: 4}
+decoys: {count: 3}

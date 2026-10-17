@@ -1,244 +1,104 @@
-# Fourth Wall: WALL-E and EVE's Signal
+<div align="center">
 
-An autonomous agent that explores a simulated wasteland, gathers clues and manages a limited battery and clock to find EVE, work out her status, and decide WALL-E's next move.
+# EVE's Signal
 
-The agent is a **classical, belief-driven planner**. It keeps a Bayesian posterior over EVE's *position × status*, plans with an energy-constrained utility function, and switches between search, investigate, recharge, return and rendezvous modes. Every step is logged with its action, observation, decision and reasoning, and each mission ends with a report and visualizations.
+**An autonomous WALL-E agent that reasons its way to EVE through noise, decoys, a dying battery and a ticking clock.**
 
-```
-python -m walle run configs/sample_mission.yaml --ascii
-```
+### [▶ Watch it live: fourth-wall-nine.vercel.app](https://fourth-wall-nine.vercel.app)
 
-```
-[sample_mission] outcome=rendezvous time=58/450 battery=40/110
-  EVE found at (27, 20) (100%), status active (100%)
-  next step: EVE is active at (27, 20). Hold position beside her, flash the greeting light and let her lead; ...
-```
+<a href="https://fourth-wall-nine.vercel.app/missions/decoy_canyon.html"><img src="docs/triangulation.png" alt="Bearing cones triangulating EVE while the agent explains each move" width="100%"></a>
 
-## Contents
+</div>
 
-| Path | What it is |
-|---|---|
-| `walle/config.py` | Loads JSON/YAML mission configs, applies defaults and validates them |
-| `walle/world.py` | Terrain grid, procedural map generator, A*/Dijkstra path planning |
-| `walle/env.py` | The simulator: hidden state, noisy beacon, decoys, clues, resource accounting |
-| `walle/belief.py` | Bayesian grid filter over EVE's (x, y, status) with decoy-aware signal model |
-| `walle/agent.py` | The autonomous agent: modes, energy guard, target selection, triangulation |
-| `walle/baselines.py` | Greedy signal-follower and random-walk agents for comparison |
-| `walle/runner.py` | Environment ↔ agent loop and the action trace |
-| `walle/report.py` | Final mission report (JSON + Markdown) |
-| `walle/viz.py` | ASCII map, strategy-change frames, SVG path image, interactive HTML replay |
-| `walle/benchmark.py` | Generalization benchmark across random missions and difficulty tiers |
-| `configs/` | Sample missions (procedural YAML and hand-drawn JSON) |
-| `runs/` | Committed outputs for both sample missions and the benchmark |
-| `tests/` | Unit tests |
+WALL-E starts with a map, a battery and one faint beacon reading. He has to find EVE, work out whether she is **active, dormant or damaged**, and decide what to do next. Spoofed transmitters, noisy sensors and a hard energy budget stand in his way. He uses no learned model: a **Bayesian belief** over EVE's position × status drives an **energy-safe planner**, and every decision is logged along with its reasoning.
 
-## Running it
-
-Requires Python 3.10+ with `numpy` and `PyYAML`.
+## Quick start
 
 ```bash
-pip install -r requirements.txt
-
-# Run one mission (outputs go to runs/<mission name>/ by default)
-python -m walle run configs/sample_mission.yaml
-python -m walle run configs/decoy_canyon.json --ascii
-python -m walle run configs/sample_mission.yaml --agent greedy --out runs/greedy_try
-
-# Generalization benchmark: belief vs greedy vs random on the same seeded missions
-python -m walle bench --n 100
-
-# Tests
-python -m unittest discover -s tests -t .
+pip install -r requirements.txt                          # numpy, PyYAML · Python 3.10+
+python -m walle run configs/last_light.yaml --open       # run a mission, open the cinematic player
+python -m walle bench --n 100                            # benchmark vs baselines
+python -m unittest discover -s tests -t .                # tests
 ```
 
-Each run writes:
+Each run writes `runs/<mission>/`:
 
-| File | Contents |
+| File | What it is |
 |---|---|
-| `trace.jsonl` | One JSON record per step: state before, mode, action, reasoning, decision details (target, its belief mass, travel cost, battery needed to reach a charger, time left), raw observation, interpreted notes, strategy changes, and a belief summary (MAP cell, top cells, entropy, 90% region size, status posterior, known decoys). Step 0 is the briefing. |
-| `report.json` / `report.md` | Final mission report (see below) |
-| `map.txt` | Final ASCII map with path, clues, decoys, EVE and the inferred location |
-| `strategy_frames.txt` | ASCII snapshot (path plus belief heatmap) at every strategy change |
-| `path.svg` | Static picture: path colored by mode, beacon-scan points, strategy-change markers, belief before the sighting |
-| `replay.html` | Self-contained interactive replay: step slider, play button, live belief heatmap, reasoning panel, and a toggle to reveal hidden ground truth |
+| `cinema.html` | **Animated isometric replay.** Self-contained and works offline |
+| `report.md` / `report.json` | Outcome, evidence, inferred location and status with confidence, the recommended next move, strategy changes |
+| `trace.jsonl` | Every step: state, action, observation, reasoning, belief summary |
+| `replay.html`, `path.svg`, `map.txt`, `strategy_frames.txt` | Simpler views |
 
-## Environment design
+## How it works
 
-The world is a 4-connected grid:
+**World.** A grid of open ground, rubble (costly) and trash walls, plus solar chargers. The agent sees the map. It doesn't see EVE, her status, the clues or the decoys.
 
-| Glyph | Terrain | Effect |
-|---|---|---|
-| `.` | open ground | move costs 1 battery, 1 time |
-| `~` | rubble | move costs 3 battery, 2 time (configurable) |
-| `#` | trash pile | impassable |
-| `C` | charger | `recharge` restores `recharge_rate` battery per action |
-| `S` | base | WALL-E's start, always a charger |
+**Sensors.**
+- **Beacon scan:** returns a bearing, strength and pulse interval for each detection. Signal strength and detection rate depend on EVE's status.
+- **Decoys:** copy EVE's signature and transmit louder. Only their pulse timing gives them away (±40 ms vs ±4 ms).
+- **Area scan:** reveals clues, decoys and EVE nearby. Clues are hover tracks, hull debris, plant residue and memory chips.
 
-**What the agent knows up front (the briefing):** the terrain map and charger locations (an "orbital map"), the resource budget, action costs, sensor specs, and the initial signal reading.
+**Belief.** A grid filter over `P[status, y, x]`. Beacon readings use a mixture model ("this detection is EVE, the rest are decoys" vs "EVE wasn't detected"), so silence is evidence too. When a decoy is found, the posterior is rebuilt from the full evidence log and old readings are explained away.
 
-**What it must discover by interacting:** EVE's position and status, clue locations and contents, and decoy transmitters. None of this appears in the briefing (a unit test enforces it).
+**Planner.** Each step, in priority order:
+1. **Rendezvous:** if EVE has been sighted, drive to her.
+2. **Recharge:** if in recharge mode, stay on the pad until nearly full.
+3. **Turn back, or make a final approach:** when the clock runs short, compare P(find EVE) on one last run with retreating (P = 0). Commit if P ≥ 0.25 and the trip fits both time and battery.
+4. **Energy guard:** never act unless a charger stays reachable with a safety margin.
+5. **Triangulate:** re-scan the beacon after moving a set distance (the baseline), so bearings from different points cross at EVE.
+6. **Search:** go where expected belief mass ÷ travel cost is highest. Switch to INVESTIGATE once one area holds ≥ 35% of the belief.
 
-### Actions
+## Results
 
-| Action | Effect |
-|---|---|
-| `move` N/E/S/W | Moves one cell; blocked moves still cost time. Driving onto a clue reveals it. |
-| `scan_signal` | Returns every beacon detection in range: bearing, strength, pulse interval and signature |
-| `scan_area` | Reveals clues, decoy transmitters and EVE (with `scan_detect_prob`) within `scan_radius` |
-| `recharge` | Only works on a charger |
-| `wait` | Spends time |
-| `end` | The agent ends the mission (`rendezvous`, `returned_to_base`, `sheltering_at_charger`) |
+100 seeded missions per tier, with every agent run on the same maps ([full table](runs/benchmark/benchmark.md)):
 
-The simulator ends the mission itself if WALL-E runs out of battery away from a charger (`stranded`) or the clock runs out (`timeout`).
+| Tier | Belief agent | Greedy | Random | Belief agent stranded |
+|---|---|---|---|---|
+| easy | **100%** | 69% | 3% | 0% |
+| medium | **100%** | 13% | 1% | 0% |
+| hard | **100%** | 10% | 0% | 0% |
+| extreme | **52%** | 5% | 0% | 0% |
 
-### Sensors and hidden state
-
-- **EVE's beacon.** Strength is `power / (1 + (d/8)²)` plus Gaussian noise, and bearing noise is Gaussian. Status changes the signal:
-
-  | Status | Power | Detection probability |
-  |---|---|---|
-  | active | 1.00 | 0.97 |
-  | dormant | 0.55 | 0.90 |
-  | damaged | 0.75 | 0.50 (flickers) |
-
-  So the strength pattern and missed detections carry status information.
-- **Decoys (spoofed signals).** These are transmitters that copy EVE's signature exactly and usually transmit *louder*. The only tell is timing: EVE pulses every 1000 ± 4 ms, while decoys jitter by ± 40 ms. An area scan next to a decoy exposes it physically.
-- **Clues.** Each clue carries different evidence:
-
-  | Clue | Where it's placed | Evidence |
-  |---|---|---|
-  | `hover_tracks` | 3–11 cells from EVE | A noisy heading toward her |
-  | `debris` | Within 4 cells if she's damaged (fresh); anywhere otherwise (weathered) | Location and status |
-  | `plant_residue` | Within 3 cells if she's active or dormant | Location and status |
-  | `memory_chip` | Anywhere | Her map quadrant, 85% reliable |
-
-## Agent design
-
-### Belief
-
-`Belief` holds `P[status, y, x]`. Each piece of evidence multiplies in a likelihood:
-
-- **Beacon scans** use a mixture model. For each detection *i* the hypotheses are "*i* is EVE, the rest are decoys" and "EVE wasn't detected, all are decoys":
-
-  `L(c, s) = (1 − p_det(d,s)) + Σᵢ p_det(d,s) · L_bearing,i(c) · L_strength,i(c,s) · [p_pulse,EVE / (p_pulse,decoy · D_i)]`
-
-  Here `D_i` is the decoy density, which is diffuse for unknown decoys and peaked for known ones. As a result, a scan that detects nothing lowers the probability of nearby cells, and the agent reports P(EVE) for every detection.
-- **Area scans with no sighting** multiply cells within the scan radius by `1 − scan_detect_prob`.
-- **Clues** apply the likelihoods from the table above, including the status-specific ones.
-- **Initial signal**: the briefing reading counts as a beacon detection from the base, and the optional rough fix counts as a Gaussian.
-
-The full evidence log is kept. When a decoy transmitter is discovered, the posterior is **rebuilt from scratch**: past readings that came from that bearing get explained away, and this is logged as a `belief_rebuild` strategy change.
-
-### Planning
-
-At each step `BeliefAgent.decide()` runs these checks in priority order:
-
-1. **Rendezvous**: if EVE has been sighted and the trip there is affordable, drive to her and end the mission next to her.
-2. **Recharge**: while in RECHARGE mode, sit on the pad until nearly full, unless the clock says leave.
-3. **Turn back**: when the time left is no more than the time to base plus a margin, switch to RETURN. RETURN checks the battery cost to base. If the trip is unaffordable it diverts to a charger, tops up there, or shelters there if time is out.
-4. **Energy guard**: never take an action that would leave less than (cost to nearest charger + safety margin). Costs come from a reverse-Dijkstra map that includes rubble.
-5. **Triangulate**: re-scan the beacon after moving a baseline distance (4 cells in SEARCH, 7 in INVESTIGATE), because bearings from separate points intersect at EVE.
-6. **Target selection**: maximize `mass_within_scan_radius(c) / (1 + travel_cost(c)/12)` over cells where `travel + scan + cost(c → charger) + margin ≤ battery`. There is a small bonus for unscanned ground (clues) and hysteresis so the agent doesn't dither between targets. When the best target holds at least 35% of the belief, the mode flips SEARCH → INVESTIGATE. The agent scans the area when it reaches the target, or earlier if it passes through a dense patch of belief.
-
-Every mode change, target change and belief rebuild is recorded with its reason. These records appear in the trace, the report, the strategy frames, and as amber markers in the SVG and replay.
-
-### Final report
-
-The report includes:
-- outcome, time and battery used, distance travelled
-- all evidence, in order found
-- the inferred location, with confidence (posterior mass within 2 cells) and the size of the 90% credible region
-- the status posterior
-- a **recommended next step**: it depends on status if EVE was found (stay and guard her when dormant, tow her to a charger when damaged); otherwise it is a targeted search or more triangulation
-- the full strategy-change table
-- an evaluation against the hidden ground truth, clearly marked as hidden from the agent
-
-## Config format
-
-Any key can be omitted; defaults are in `walle/config.py`. YAML and JSON are both accepted.
-
-```yaml
-mission: {name: my_mission, seed: 42}       # seed drives map, hidden state and sensor noise
-
-map:                                        # either procedural...
-  width: 40
-  height: 26
-  obstacle_density: 0.15
-  rubble_density: 0.12
-  chargers: 3                               # including the base
-  # ...or hand-drawn (glyphs . # ~ C S E):
-  # grid: ["S....#", ".~..C.", "....#E"]
-
-start: [1, 1]                               # optional; or 'S' in grid
-
-eve:
-  position: null                            # null = seeded (far from base); or 'E' in grid
-  status: null                              # active | dormant | damaged | null = seeded
-
-initial_signal:
-  bearing_deg: 118                          # null = simulator derives a noisy first reading
-  strength: 0.09
-  timestamp: "2805-07-04T05:40:00Z"
-  coordinates: [22, 11]                     # optional rough fix
-  uncertainty: 7                            # cells (std of the fix)
-
-resources:
-  battery: 110
-  time_limit: 450
-  recharge_rate: 30
-  costs:      {move: 1, move_rubble: 3, scan_signal: 2, scan_area: 3, recharge: 0, wait: 0}
-  time_costs: {move: 1, move_rubble: 2, scan_signal: 1, scan_area: 2, recharge: 1, wait: 1}
-
-sensors:
-  signal_range: 40
-  bearing_noise_deg: 18
-  strength_noise: 0.05
-  scan_radius: 2
-  scan_detect_prob: 0.95
-
-clues:
-  count: 6                                  # seeded placement, or explicit:
-  # list: [{type: hover_tracks, position: [21, 9]}, {type: memory_chip, position: [10, 6]}]
-
-decoys:
-  count: 2                                  # seeded placement, or explicit:
-  # list: [{position: [14, 11], power: 1.4}]
-```
+- **Greedy** chases the loudest signal, so decoys mislead it, and it strands itself on 16% of extreme missions.
+- **Final approach ablation (extreme tier):** 46% success without the rule, 52% with it, and still no strandings.
 
 ## Sample missions
 
-| Config | Setup | Result |
+| Mission | Story | Result |
 |---|---|---|
-| [`configs/sample_mission.yaml`](configs/sample_mission.yaml) | Procedural 40×26 map, 2 seeded decoys, noisy sensors, 110 battery | Rendezvous at t=58. Every beacon scan saw 2–3 detections, and the agent scored the decoys at P(EVE)≈0 from pulse timing. It triangulated over 9 scans, switched to INVESTIGATE at t=44, and identified EVE as active. [report](runs/sample_mission/report.md) · [trace](runs/sample_mission/trace.jsonl) · [frames](runs/sample_mission/strategy_frames.txt) |
-| [`configs/decoy_canyon.json`](configs/decoy_canyon.json) | Hand-drawn 30×16 map, a loud decoy on the direct route plus a second decoy, damaged EVE, 110 time limit | Briefly targeted the decoy area, then moved past it as timing evidence built up. Reached the damaged EVE at t=60/110 and recommended towing her to the charger 11 battery away. [report](runs/decoy_canyon/report.md) · [trace](runs/decoy_canyon/trace.jsonl) |
+| [`sample_mission`](configs/sample_mission.yaml) | Two decoys out-shout EVE | Rejects both on pulse timing; finds active EVE at t=58 · [watch](https://fourth-wall-nine.vercel.app/missions/sample_mission.html) |
+| [`decoy_canyon`](configs/decoy_canyon.json) | A loud decoy on the direct route, damaged EVE | Lured briefly, then corrects; recommends towing her to a charger · [watch](https://fourth-wall-nine.vercel.app/missions/decoy_canyon.html) |
+| [`last_light`](configs/last_light.yaml) | Extreme tier, 220 ticks | At t=170: *"a run to (10, 27) finds EVE with P=90%, retreating finds her with P=0"*. Reaches her at t=212 · [watch](https://fourth-wall-nine.vercel.app/missions/last_light.html) |
 
-Open `runs/<mission>/replay.html` in a browser to step through a mission.
+<img src="docs/final_approach.png" alt="Final approach: the agent commits to the belief peak with 50 ticks left" width="100%">
 
-## Benchmark
+## Cinematic player
 
-`python -m walle bench --n 100` runs all three agents on the same 100 seeded missions in each of four tiers. Full results are in [`runs/benchmark/benchmark.md`](runs/benchmark/benchmark.md).
+The trash-cube wasteland is drawn with the plain canvas API, with no libraries.
+- **Belief:** a glowing heatmap.
+- **Beacon readings:** bearing cones, cyan for EVE and orange for decoys.
+- **EVE:** drawn according to her true status.
+- **HUD:** a live reasoning log, battery, clock, status posterior, entropy sparkline, minimap and a scrubbable timeline.
 
-| tier | agent | success | stranded | mean time (success) | status acc. |
-|---|---|---|---|---|---|
-| easy | **belief** | **100%** | 0% | 30.9 | 100% |
-| easy | greedy | 69% | 0% | 77.5 | 69% |
-| easy | random | 3% | 0% | 241 | 33% |
-| medium | **belief** | **100%** | 0% | 48.5 | 100% |
-| medium | greedy | 13% | 0% | 93.2 | 30% |
-| hard | **belief** | **100%** | 0% | 77.4 | 100% |
-| hard | greedy | 10% | 0% | 109.4 | 29% |
-| extreme | **belief** | **46%** | **0%** | 93.3 | 85% |
-| extreme | greedy | 5% | 16% | 88.8 | 34% |
+**Keys:** `space` play · `←/→` step · `1–4` speed · `T` X-ray truth · `R` bearings · `H` belief · `O` overview · `S` sound. Link to a moment with `cinema.html#step=120`.
 
-- **Greedy** trusts the strongest reading, so decoys pull it off course, and it strands itself 16% of the time on extreme missions with its fixed "recharge at 35%" rule.
-- **The belief agent never strands.** When the extreme tier's 70-unit battery and 220-unit clock don't allow a sighting, it returns to base (or shelters at a charger) with an inferred location and status instead.
+Rebuild the showcase site with `python -m walle site`.
 
-## Extensions implemented
+## Layout
 
-Of the listed stretch and advanced goals, this project implements:
-- path, clue and strategy-change visualization (ASCII, SVG and an interactive HTML UI)
-- decoy/spoofed signals
-- noisy sensors
-- a generalization benchmark across random missions, with classical baselines
+```
+walle/
+  env.py      simulator and hidden state          belief.py   Bayesian grid filter
+  agent.py    belief-driven planner               baselines.py greedy and random agents
+  world.py    terrain, A*, Dijkstra               runner.py   agent ↔ env loop, trace
+  report.py   mission report                      benchmark.py tiers and evaluation
+  viz.py      ASCII / SVG / HTML replay           cinema.py   isometric player
+  config.py   YAML/JSON loader and defaults       site.py     static showcase site
+configs/      sample missions (procedural or hand-drawn)
+runs/         committed outputs and benchmark
+```
 
-It does not include multi-agent coordination, an LLM-planner comparison, or a physics simulator.
+Configs accept procedural maps or hand-drawn grids (`S . # ~ C E`). Every key is optional; defaults are in [`walle/config.py`](walle/config.py).
+
+**Not included:** multi-agent coordination, an LLM-planner comparison, a physics simulator.

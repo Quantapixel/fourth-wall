@@ -1,0 +1,1053 @@
+{
+  "mission": "last_light",
+  "seed": 1036,
+  "agent": "belief",
+  "outcome": "rendezvous",
+  "steps": 197,
+  "time_used": 212,
+  "time_limit": 220,
+  "battery_left": 26.0,
+  "battery_capacity": 70.0,
+  "distance_travelled": 159,
+  "assessment": {
+    "found": true,
+    "location": [
+      10,
+      28
+    ],
+    "location_confidence": 1.0,
+    "status": "active",
+    "status_confidence": 1.0,
+    "status_posterior": {
+      "active": 1.0,
+      "dormant": 0.0,
+      "damaged": 0.0
+    },
+    "cells_90": 1,
+    "entropy_bits": -0.0
+  },
+  "recommended_next_step": "EVE is active at (10, 28). Hold position beside her, flash the greeting light and let her lead; nearest charger is 26 battery away if she wants to travel.",
+  "evidence": [
+    {
+      "time": 0,
+      "kind": "initial_signal",
+      "detail": {
+        "bearing_deg": 161.4,
+        "strength": 0.0,
+        "timestamp": "2805-07-04T06:00:00Z",
+        "coordinates": null,
+        "uncertainty": 6.0,
+        "pulse_interval_ms": 999.4
+      }
+    },
+    {
+      "time": 1,
+      "kind": "signal",
+      "position": [
+        1,
+        1
+      ],
+      "detail": [
+        {
+          "bearing_deg": 32.6,
+          "strength": 0.365,
+          "pulse_interval_ms": 1045.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 134.4,
+          "strength": 0.1853,
+          "pulse_interval_ms": 988.6,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.237
+        },
+        {
+          "bearing_deg": 80.4,
+          "strength": 0.0,
+          "pulse_interval_ms": 981.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 252.5,
+          "strength": 0.0832,
+          "pulse_interval_ms": 1002.1,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.732
+        }
+      ]
+    },
+    {
+      "time": 9,
+      "kind": "signal",
+      "position": [
+        3,
+        5
+      ],
+      "detail": [
+        {
+          "bearing_deg": 105.9,
+          "strength": 0.1295,
+          "pulse_interval_ms": 1010.8,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.097
+        },
+        {
+          "bearing_deg": 116.0,
+          "strength": 0.1287,
+          "pulse_interval_ms": 1057.6,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 87.3,
+          "strength": 0.4361,
+          "pulse_interval_ms": 1016.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 208.9,
+          "strength": 0.1959,
+          "pulse_interval_ms": 997.4,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.899
+        }
+      ]
+    },
+    {
+      "time": 14,
+      "kind": "signal",
+      "position": [
+        3,
+        9
+      ],
+      "detail": [
+        {
+          "bearing_deg": 128.5,
+          "strength": 0.0841,
+          "pulse_interval_ms": 980.8,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 162.6,
+          "strength": 0.1106,
+          "pulse_interval_ms": 999.7,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.991
+        },
+        {
+          "bearing_deg": 65.2,
+          "strength": 0.2919,
+          "pulse_interval_ms": 1013.6,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 58.2,
+          "strength": 0.2826,
+          "pulse_interval_ms": 1003.5,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.008
+        }
+      ]
+    },
+    {
+      "time": 19,
+      "kind": "signal",
+      "position": [
+        3,
+        13
+      ],
+      "detail": [
+        {
+          "bearing_deg": 76.8,
+          "strength": 0.3177,
+          "pulse_interval_ms": 1044.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 104.8,
+          "strength": 0.0,
+          "pulse_interval_ms": 1009.6,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.01
+        },
+        {
+          "bearing_deg": 103.3,
+          "strength": 0.0,
+          "pulse_interval_ms": 1040.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 137.0,
+          "strength": 0.2767,
+          "pulse_interval_ms": 1003.6,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.988
+        }
+      ]
+    },
+    {
+      "time": 25,
+      "kind": "signal",
+      "position": [
+        4,
+        17
+      ],
+      "detail": [
+        {
+          "bearing_deg": 137.7,
+          "strength": 0.2528,
+          "pulse_interval_ms": 998.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.888
+        },
+        {
+          "bearing_deg": 27.6,
+          "strength": 0.1803,
+          "pulse_interval_ms": 975.5,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 182.6,
+          "strength": 0.2266,
+          "pulse_interval_ms": 1007.3,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.112
+        },
+        {
+          "bearing_deg": 82.6,
+          "strength": 0.0773,
+          "pulse_interval_ms": 953.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        }
+      ]
+    },
+    {
+      "time": 31,
+      "kind": "clue",
+      "position": [
+        3,
+        20
+      ],
+      "detail": {
+        "type": "hover_tracks",
+        "position": [
+          3,
+          20
+        ],
+        "heading_deg": 135.5,
+        "note": "Scorched sand where EVE's thrusters hovered low."
+      }
+    },
+    {
+      "time": 33,
+      "kind": "signal",
+      "position": [
+        5,
+        21
+      ],
+      "detail": [
+        {
+          "bearing_deg": 13.7,
+          "strength": 0.0514,
+          "pulse_interval_ms": 1012.5,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 36.5,
+          "strength": 0.113,
+          "pulse_interval_ms": 995.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.001
+        },
+        {
+          "bearing_deg": 33.3,
+          "strength": 0.2886,
+          "pulse_interval_ms": 1036.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 139.6,
+          "strength": 0.5156,
+          "pulse_interval_ms": 994.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.998
+        }
+      ]
+    },
+    {
+      "time": 57,
+      "kind": "signal",
+      "position": [
+        2,
+        30
+      ],
+      "detail": [
+        {
+          "bearing_deg": 78.6,
+          "strength": 0.0038,
+          "pulse_interval_ms": 929.8,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 58.9,
+          "strength": 0.2747,
+          "pulse_interval_ms": 1027.8,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 18.1,
+          "strength": 0.087,
+          "pulse_interval_ms": 984.7,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 70.7,
+          "strength": 0.3891,
+          "pulse_interval_ms": 990.8,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.997
+        }
+      ]
+    },
+    {
+      "time": 70,
+      "kind": "signal",
+      "position": [
+        5,
+        23
+      ],
+      "detail": [
+        {
+          "bearing_deg": 85.5,
+          "strength": 0.0732,
+          "pulse_interval_ms": 1009.6,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 146.8,
+          "strength": 0.6958,
+          "pulse_interval_ms": 1000.5,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 1.0
+        },
+        {
+          "bearing_deg": 82.0,
+          "strength": 0.2426,
+          "pulse_interval_ms": 982.0,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 312.6,
+          "strength": 0.0932,
+          "pulse_interval_ms": 936.5,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        }
+      ]
+    },
+    {
+      "time": 77,
+      "kind": "signal",
+      "position": [
+        7,
+        19
+      ],
+      "detail": [
+        {
+          "bearing_deg": 84.7,
+          "strength": 0.2017,
+          "pulse_interval_ms": 1025.4,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 353.4,
+          "strength": 0.253,
+          "pulse_interval_ms": 938.1,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 84.5,
+          "strength": 0.0997,
+          "pulse_interval_ms": 996.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 147.1,
+          "strength": 0.3083,
+          "pulse_interval_ms": 997.5,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.999
+        }
+      ]
+    },
+    {
+      "time": 92,
+      "kind": "signal",
+      "position": [
+        4,
+        16
+      ],
+      "detail": [
+        {
+          "bearing_deg": 72.6,
+          "strength": 0.1418,
+          "pulse_interval_ms": 1001.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.005
+        },
+        {
+          "bearing_deg": 98.7,
+          "strength": 0.268,
+          "pulse_interval_ms": 1018.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 35.3,
+          "strength": 0.2418,
+          "pulse_interval_ms": 986.4,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 148.0,
+          "strength": 0.2893,
+          "pulse_interval_ms": 999.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.995
+        }
+      ]
+    },
+    {
+      "time": 116,
+      "kind": "signal",
+      "position": [
+        2,
+        30
+      ],
+      "detail": [
+        {
+          "bearing_deg": 74.9,
+          "strength": 0.5025,
+          "pulse_interval_ms": 998.4,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 1.0
+        },
+        {
+          "bearing_deg": 77.4,
+          "strength": 0.1014,
+          "pulse_interval_ms": 951.0,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 41.2,
+          "strength": 0.0,
+          "pulse_interval_ms": 954.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 61.7,
+          "strength": 0.0446,
+          "pulse_interval_ms": 1048.7,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        }
+      ]
+    },
+    {
+      "time": 122,
+      "kind": "signal",
+      "position": [
+        1,
+        26
+      ],
+      "detail": [
+        {
+          "bearing_deg": 30.5,
+          "strength": 0.0751,
+          "pulse_interval_ms": 1044.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 97.3,
+          "strength": 0.4765,
+          "pulse_interval_ms": 1006.4,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 1.0
+        },
+        {
+          "bearing_deg": 89.8,
+          "strength": 0.2003,
+          "pulse_interval_ms": 974.7,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 80.9,
+          "strength": 0.0,
+          "pulse_interval_ms": 923.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        }
+      ]
+    },
+    {
+      "time": 137,
+      "kind": "signal",
+      "position": [
+        1,
+        30
+      ],
+      "detail": [
+        {
+          "bearing_deg": 33.3,
+          "strength": 0.1035,
+          "pulse_interval_ms": 952.8,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 351.9,
+          "strength": 0.0989,
+          "pulse_interval_ms": 1032.5,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 78.3,
+          "strength": 0.4998,
+          "pulse_interval_ms": 1006.5,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.968
+        },
+        {
+          "bearing_deg": 64.8,
+          "strength": 0.1628,
+          "pulse_interval_ms": 992.7,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.032
+        }
+      ]
+    },
+    {
+      "time": 148,
+      "kind": "signal",
+      "position": [
+        1,
+        26
+      ],
+      "detail": [
+        {
+          "bearing_deg": 357.6,
+          "strength": 0.0988,
+          "pulse_interval_ms": 986.5,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 108.2,
+          "strength": 0.0545,
+          "pulse_interval_ms": 958.5,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 77.5,
+          "strength": 0.4697,
+          "pulse_interval_ms": 1004.8,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 1.0
+        },
+        {
+          "bearing_deg": 105.9,
+          "strength": 0.1894,
+          "pulse_interval_ms": 952.0,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        }
+      ]
+    },
+    {
+      "time": 196,
+      "kind": "clue",
+      "position": [
+        12,
+        18
+      ],
+      "detail": {
+        "type": "memory_chip",
+        "position": [
+          12,
+          18
+        ],
+        "quadrant": "NW",
+        "note": "Axiom probe log fragment: last known sector."
+      }
+    },
+    {
+      "time": 212,
+      "kind": "eve_sighting",
+      "position": [
+        10,
+        28
+      ],
+      "detail": {
+        "position": [
+          10,
+          28
+        ],
+        "status": "active",
+        "note": "EVE is hovering, scanner sweeping. She sees you."
+      }
+    },
+    {
+      "time": 212,
+      "kind": "clue",
+      "position": [
+        9,
+        28
+      ],
+      "detail": {
+        "type": "plant_residue",
+        "position": [
+          9,
+          28
+        ],
+        "note": "Soil disturbed around a seedling's root ball."
+      }
+    }
+  ],
+  "strategy_changes": [
+    {
+      "time": 1,
+      "position": [
+        1,
+        1
+      ],
+      "kind": "target",
+      "to": [
+        2,
+        26
+      ],
+      "why": "mass 0.0438 at travel cost 32"
+    },
+    {
+      "time": 19,
+      "position": [
+        3,
+        13
+      ],
+      "kind": "target",
+      "to": [
+        5,
+        20
+      ],
+      "why": "mass 0.1044 at travel cost 9"
+    },
+    {
+      "time": 31,
+      "position": [
+        5,
+        20
+      ],
+      "kind": "target",
+      "to": [
+        6,
+        23
+      ],
+      "why": "mass 0.0456 at travel cost 4"
+    },
+    {
+      "time": 38,
+      "position": [
+        6,
+        23
+      ],
+      "kind": "target",
+      "to": [
+        4,
+        24
+      ],
+      "why": "mass 0.0008 at travel cost 3"
+    },
+    {
+      "time": 43,
+      "position": [
+        4,
+        24
+      ],
+      "kind": "mode",
+      "to": "RECHARGE",
+      "why": "SEARCH -> RECHARGE: battery 17 vs 10 needed to reach a charger + margin"
+    },
+    {
+      "time": 56,
+      "position": [
+        2,
+        30
+      ],
+      "kind": "mode",
+      "to": "SEARCH",
+      "why": "RECHARGE -> SEARCH: battery restored"
+    },
+    {
+      "time": 57,
+      "position": [
+        2,
+        30
+      ],
+      "kind": "mode",
+      "to": "INVESTIGATE",
+      "why": "SEARCH -> INVESTIGATE: best target holds 36% of the belief within scan radius"
+    },
+    {
+      "time": 57,
+      "position": [
+        2,
+        30
+      ],
+      "kind": "target",
+      "to": [
+        12,
+        25
+      ],
+      "why": "mass 0.3603 at travel cost 37"
+    },
+    {
+      "time": 70,
+      "position": [
+        5,
+        23
+      ],
+      "kind": "mode",
+      "to": "SEARCH",
+      "why": "INVESTIGATE -> SEARCH: best target holds 8% of the belief within scan radius"
+    },
+    {
+      "time": 70,
+      "position": [
+        5,
+        23
+      ],
+      "kind": "target",
+      "to": [
+        12,
+        24
+      ],
+      "why": "mass 0.0754 at travel cost 24"
+    },
+    {
+      "time": 77,
+      "position": [
+        7,
+        19
+      ],
+      "kind": "target",
+      "to": [
+        7,
+        19
+      ],
+      "why": "mass 0.0 at travel cost 0"
+    },
+    {
+      "time": 79,
+      "position": [
+        7,
+        19
+      ],
+      "kind": "target",
+      "to": [
+        6,
+        17
+      ],
+      "why": "mass 0.0 at travel cost 3"
+    },
+    {
+      "time": 84,
+      "position": [
+        6,
+        17
+      ],
+      "kind": "target",
+      "to": [
+        4,
+        18
+      ],
+      "why": "mass 0.0 at travel cost 3"
+    },
+    {
+      "time": 89,
+      "position": [
+        4,
+        18
+      ],
+      "kind": "target",
+      "to": [
+        4,
+        15
+      ],
+      "why": "mass 0.0 at travel cost 3"
+    },
+    {
+      "time": 92,
+      "position": [
+        4,
+        16
+      ],
+      "kind": "target",
+      "to": [
+        2,
+        19
+      ],
+      "why": "mass 0.0 at travel cost 5"
+    },
+    {
+      "time": 99,
+      "position": [
+        2,
+        19
+      ],
+      "kind": "mode",
+      "to": "RECHARGE",
+      "why": "SEARCH -> RECHARGE: battery 19 vs 13 needed to reach a charger + margin"
+    },
+    {
+      "time": 115,
+      "position": [
+        2,
+        30
+      ],
+      "kind": "mode",
+      "to": "SEARCH",
+      "why": "RECHARGE -> SEARCH: battery restored"
+    },
+    {
+      "time": 116,
+      "position": [
+        2,
+        30
+      ],
+      "kind": "target",
+      "to": [
+        12,
+        25
+      ],
+      "why": "mass 0.0783 at travel cost 37"
+    },
+    {
+      "time": 122,
+      "position": [
+        1,
+        26
+      ],
+      "kind": "target",
+      "to": [
+        1,
+        26
+      ],
+      "why": "mass 0.0 at travel cost 0"
+    },
+    {
+      "time": 124,
+      "position": [
+        1,
+        26
+      ],
+      "kind": "target",
+      "to": [
+        3,
+        27
+      ],
+      "why": "mass 0.0 at travel cost 3"
+    },
+    {
+      "time": 129,
+      "position": [
+        3,
+        27
+      ],
+      "kind": "target",
+      "to": [
+        1,
+        29
+      ],
+      "why": "mass 0.0 at travel cost 4"
+    },
+    {
+      "time": 135,
+      "position": [
+        1,
+        29
+      ],
+      "kind": "target",
+      "to": [
+        2,
+        31
+      ],
+      "why": "mass 0.0 at travel cost 3"
+    },
+    {
+      "time": 141,
+      "position": [
+        2,
+        31
+      ],
+      "kind": "target",
+      "to": [
+        1,
+        23
+      ],
+      "why": "mass 0.0 at travel cost 9"
+    },
+    {
+      "time": 153,
+      "position": [
+        1,
+        23
+      ],
+      "kind": "target",
+      "to": [
+        3,
+        26
+      ],
+      "why": "mass 0.0 at travel cost 5"
+    },
+    {
+      "time": 160,
+      "position": [
+        3,
+        26
+      ],
+      "kind": "mode",
+      "to": "RECHARGE",
+      "why": "SEARCH -> RECHARGE: battery 15 vs 7 needed to reach a charger + margin"
+    },
+    {
+      "time": 170,
+      "position": [
+        2,
+        30
+      ],
+      "kind": "mode",
+      "to": "SEARCH",
+      "why": "RECHARGE -> SEARCH: battery restored"
+    },
+    {
+      "time": 170,
+      "position": [
+        2,
+        30
+      ],
+      "kind": "mode",
+      "to": "FINAL_APPROACH",
+      "why": "SEARCH -> FINAL_APPROACH: 50 time left, base is 35 away; a run to (10, 27) finds EVE with P=90% (travel 40 time / 41 battery), retreating finds her with P=0"
+    },
+    {
+      "time": 212,
+      "position": [
+        10,
+        27
+      ],
+      "kind": "mode",
+      "to": "DONE",
+      "why": "FINAL_APPROACH -> DONE: reached EVE"
+    }
+  ],
+  "ground_truth": {
+    "eve_position": [
+      10,
+      28
+    ],
+    "eve_status": "active",
+    "clues": [
+      {
+        "type": "hover_tracks",
+        "position": [
+          3,
+          20
+        ],
+        "found": true
+      },
+      {
+        "type": "memory_chip",
+        "position": [
+          12,
+          18
+        ],
+        "found": true
+      },
+      {
+        "type": "plant_residue",
+        "position": [
+          9,
+          28
+        ],
+        "found": true
+      },
+      {
+        "type": "debris",
+        "position": [
+          36,
+          4
+        ],
+        "found": false
+      }
+    ],
+    "decoys": [
+      {
+        "position": [
+          22,
+          21
+        ],
+        "power": 1.45,
+        "found": false
+      },
+      {
+        "position": [
+          34,
+          14
+        ],
+        "power": 1.29,
+        "found": false
+      },
+      {
+        "position": [
+          15,
+          1
+        ],
+        "power": 1.47,
+        "found": false
+      }
+    ]
+  },
+  "evaluation": {
+    "location_error_cells": 0.0,
+    "status_correct": true,
+    "clues_found": 3,
+    "clues_total": 4,
+    "decoys_identified": 0,
+    "decoys_total": 3
+  }
+}
