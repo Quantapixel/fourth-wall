@@ -74,11 +74,13 @@ class Environment:
         # Base station charger at start, plus extra chargers spread around the map.
         chargers = set(self.grid.chargers) | {start}
         want = int(m.get("chargers", 2)) if "grid" not in m else len(chargers)
-        while len(chargers) < want:
+        spread = min(self.grid.width, self.grid.height) / 2
+        for _ in range(2000):
+            if len(chargers) >= min(want, len(open_cells)):
+                break
             c = self.rng.choice(open_cells)
-            if min(dist(c, o) for o in chargers) >= min(self.grid.width, self.grid.height) / 2:
-                chargers.add(c)
-            elif self.rng.random() < 0.02:
+            # Prefer well-spread pads; occasionally accept any free cell so this always terminates.
+            if c not in chargers and (min(dist(c, o) for o in chargers) >= spread or self.rng.random() < 0.02):
                 chargers.add(c)
         self.grid.chargers = sorted(chargers)
 

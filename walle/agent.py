@@ -58,6 +58,7 @@ class BeliefAgent:
 
         self.to_charger = self.grid.cost_to_targets(self.grid.chargers)
         self.time_to_base = self.tgrid.cost_to_targets([self.start])
+        self.to_base = self.grid.cost_to_targets([self.start])
         self.scanned = np.zeros((self.grid.height, self.grid.width), dtype=bool)
         self.mode = SEARCH
         self.target: Cell | None = None
@@ -236,9 +237,24 @@ class BeliefAgent:
                 self._set_mode(DONE, "back at base")
                 self.end_reason = "returned_to_base"
                 return {"type": "end", "reason": "returned_to_base"}, "Back at base with the report.", decision
-            step = self._step_toward(self.start)
-            if step:
-                return step, "Out of time for searching; returning to base.", decision
+            to_base = self.to_base.get(self.pos, 1 << 30)
+            if self.battery >= to_base + 1:
+                step = self._step_toward(self.start)
+                if step:
+                    return step, f"Out of time for searching; returning to base ({to_base} battery away).", decision
+            elif self.pos in self.grid.chargers:
+                # Can't make it home on this charge. Top up if the clock allows, otherwise shelter here.
+                if time_left > self.time_to_base.get(self.pos, 0) + 1 and self.battery < self.capacity - 1:
+                    return {"type": "recharge"}, f"Need {to_base} battery to reach base; recharging first.", decision
+                self._set_mode(DONE, "cannot reach base in time; sheltering at charger")
+                self.end_reason = "sheltering_at_charger"
+                return ({"type": "end", "reason": "sheltering_at_charger"},
+                        "Base is out of reach on this charge and clock; sheltering on the charger.", decision)
+            else:
+                goal = self._nearest_charger()
+                step = self._step_toward(goal)
+                if step:
+                    return step, f"Base is {to_base} battery away, have {self.battery:.0f}; diverting to charger {goal}.", decision
 
         # 4. Energy guard: never take an action that could leave us unable to reach a charger.
         if self.battery - self._max_action_cost() < battery_home + self.p.safety_margin:

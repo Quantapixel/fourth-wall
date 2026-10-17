@@ -23,6 +23,8 @@ def _recommend(found: bool, a: dict[str, Any], agent, outcome: str) -> str:
     if outcome == "stranded":
         return (f"WALL-E ran out of battery. Recovery team should retrieve him, then search around ({x}, {y}) "
                 f"where the belief peaks.")
+    if a["cells_90"] < 0:  # baseline agents keep no belief, only a last guess
+        return f"EVE not found. Best guess from the last beacon reading is ({x}, {y}); search there next."
     if a["location_confidence"] >= 0.5:
         return (f"EVE not sighted, but {a['location_confidence']:.0%} of the belief lies within 2 cells of "
                 f"({x}, {y}). Recharge fully and make a direct run there with an area scan on arrival; she is "

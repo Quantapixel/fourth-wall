@@ -183,7 +183,22 @@ def parse_grid(grid: list[str]) -> tuple[list[str], list[Cell], Cell | None, Cel
 def generate_terrain(
     width: int, height: int, obstacle_density: float, rubble_density: float, rng: random.Random, start: Cell
 ) -> list[str]:
-    """Random terrain with wall clusters (trash piles) and rubble, fully connected from start."""
+    """Random terrain with wall clusters (trash piles) and rubble, fully connected from start.
+
+    Retries until the region reachable from start covers most of the non-wall area, so a
+    start boxed in by trash never produces a degenerate one-room map.
+    """
+    for _ in range(50):
+        rows = _terrain_attempt(width, height, obstacle_density, rubble_density, rng, start)
+        open_count = sum(ch != WALL for r in rows for ch in r)
+        if open_count >= 0.7 * width * height * (1 - obstacle_density):
+            break
+    return rows
+
+
+def _terrain_attempt(
+    width: int, height: int, obstacle_density: float, rubble_density: float, rng: random.Random, start: Cell
+) -> list[str]:
     rows = [[OPEN] * width for _ in range(height)]
     # Grow walls as small clusters so the map has corridors rather than salt-and-pepper noise.
     target_walls = int(width * height * obstacle_density)
@@ -196,6 +211,11 @@ def generate_terrain(
                 placed += 1
             dx, dy = rng.choice(list(DIRS.values()))
             x, y = x + dx, y + dy
+    for dy in (-1, 0, 1):  # keep the base station's surroundings clear
+        for dx in (-1, 0, 1):
+            x, y = start[0] + dx, start[1] + dy
+            if 0 <= x < width and 0 <= y < height:
+                rows[y][x] = OPEN
     for _ in range(int(width * height * rubble_density)):
         x, y = rng.randrange(width), rng.randrange(height)
         if rows[y][x] == OPEN and (x, y) != start:
