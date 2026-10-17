@@ -1,0 +1,470 @@
+{
+  "mission": "decoy_canyon",
+  "seed": 7,
+  "agent": "belief",
+  "outcome": "rendezvous",
+  "steps": 58,
+  "time_used": 60,
+  "time_limit": 110,
+  "battery_left": 19.0,
+  "battery_capacity": 90.0,
+  "distance_travelled": 46,
+  "assessment": {
+    "found": true,
+    "location": [
+      29,
+      14
+    ],
+    "location_confidence": 1.0,
+    "status": "damaged",
+    "status_confidence": 1.0,
+    "status_posterior": {
+      "active": 0.0,
+      "dormant": 0.0,
+      "damaged": 1.0
+    },
+    "cells_90": 1,
+    "entropy_bits": -0.0
+  },
+  "recommended_next_step": "EVE is damaged at (29, 14). Stabilise her, then tow her to the nearest charger (11 battery away) and scavenge parts for repairs before the next storm.",
+  "evidence": [
+    {
+      "time": 0,
+      "kind": "initial_signal",
+      "detail": {
+        "bearing_deg": 118,
+        "strength": 0.09,
+        "timestamp": "2805-07-04T05:40:00Z",
+        "coordinates": [
+          22,
+          11
+        ],
+        "uncertainty": 7
+      }
+    },
+    {
+      "time": 1,
+      "kind": "signal",
+      "position": [
+        0,
+        0
+      ],
+      "detail": [
+        {
+          "bearing_deg": 122.9,
+          "strength": 0.2521,
+          "pulse_interval_ms": 1006.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.014
+        },
+        {
+          "bearing_deg": 112.6,
+          "strength": 0.0064,
+          "pulse_interval_ms": 1004.4,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.985
+        },
+        {
+          "bearing_deg": 170.2,
+          "strength": 0.263,
+          "pulse_interval_ms": 1020.3,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        }
+      ]
+    },
+    {
+      "time": 7,
+      "kind": "signal",
+      "position": [
+        1,
+        4
+      ],
+      "detail": [
+        {
+          "bearing_deg": 161.5,
+          "strength": 0.5278,
+          "pulse_interval_ms": 1025.4,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 122.9,
+          "strength": 0.3377,
+          "pulse_interval_ms": 998.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.893
+        }
+      ]
+    },
+    {
+      "time": 13,
+      "kind": "signal",
+      "position": [
+        2,
+        8
+      ],
+      "detail": [
+        {
+          "bearing_deg": 93.8,
+          "strength": 0.0811,
+          "pulse_interval_ms": 998.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.999
+        },
+        {
+          "bearing_deg": 146.0,
+          "strength": 0.8311,
+          "pulse_interval_ms": 955.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 85.2,
+          "strength": 0.4007,
+          "pulse_interval_ms": 965.6,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        }
+      ]
+    },
+    {
+      "time": 20,
+      "kind": "signal",
+      "position": [
+        6,
+        10
+      ],
+      "detail": [
+        {
+          "bearing_deg": 205.6,
+          "strength": 1.1329,
+          "pulse_interval_ms": 941.4,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 114.3,
+          "strength": 0.7468,
+          "pulse_interval_ms": 954.3,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 77.5,
+          "strength": 0.0959,
+          "pulse_interval_ms": 1000.2,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 1.0
+        }
+      ]
+    },
+    {
+      "time": 26,
+      "kind": "signal",
+      "position": [
+        10,
+        9
+      ],
+      "detail": [
+        {
+          "bearing_deg": 240.7,
+          "strength": 0.815,
+          "pulse_interval_ms": 985.6,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 89.7,
+          "strength": 1.0846,
+          "pulse_interval_ms": 980.1,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 110.6,
+          "strength": 0.1398,
+          "pulse_interval_ms": 999.6,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 1.0
+        }
+      ]
+    },
+    {
+      "time": 32,
+      "kind": "signal",
+      "position": [
+        14,
+        8
+      ],
+      "detail": [
+        {
+          "bearing_deg": 107.2,
+          "strength": 0.1404,
+          "pulse_interval_ms": 998.3,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 1.0
+        },
+        {
+          "bearing_deg": 242.8,
+          "strength": 0.4219,
+          "pulse_interval_ms": 1038.6,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        }
+      ]
+    },
+    {
+      "time": 43,
+      "kind": "signal",
+      "position": [
+        21,
+        11
+      ],
+      "detail": [
+        {
+          "bearing_deg": 262.0,
+          "strength": 0.2506,
+          "pulse_interval_ms": 952.0,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 277.8,
+          "strength": 0.8023,
+          "pulse_interval_ms": 1021.9,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.0
+        },
+        {
+          "bearing_deg": 112.7,
+          "strength": 0.3268,
+          "pulse_interval_ms": 1001.0,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.999
+        }
+      ]
+    },
+    {
+      "time": 50,
+      "kind": "clue",
+      "position": [
+        27,
+        12
+      ],
+      "detail": {
+        "type": "debris",
+        "position": [
+          27,
+          12
+        ],
+        "freshness": "fresh",
+        "note": "White hull fragments, still warm."
+      }
+    },
+    {
+      "time": 57,
+      "kind": "signal",
+      "position": [
+        28,
+        13
+      ],
+      "detail": [
+        {
+          "bearing_deg": 270.2,
+          "strength": 0.1514,
+          "pulse_interval_ms": 1013.0,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.001
+        },
+        {
+          "bearing_deg": 265.9,
+          "strength": 0.3552,
+          "pulse_interval_ms": 1019.1,
+          "signature": "EVE-PROBE-07",
+          "p_eve": 0.001
+        }
+      ]
+    },
+    {
+      "time": 59,
+      "kind": "eve_sighting",
+      "position": [
+        29,
+        14
+      ],
+      "detail": {
+        "position": [
+          29,
+          14
+        ],
+        "status": "damaged",
+        "note": "EVE is grounded, scorched, beacon flickering."
+      }
+    }
+  ],
+  "strategy_changes": [
+    {
+      "time": 1,
+      "position": [
+        0,
+        0
+      ],
+      "kind": "target",
+      "to": [
+        25,
+        10
+      ],
+      "why": "mass 0.1411 at travel cost 35"
+    },
+    {
+      "time": 7,
+      "position": [
+        1,
+        4
+      ],
+      "kind": "target",
+      "to": [
+        12,
+        11
+      ],
+      "why": "mass 0.3042 at travel cost 18"
+    },
+    {
+      "time": 13,
+      "position": [
+        2,
+        8
+      ],
+      "kind": "target",
+      "to": [
+        23,
+        9
+      ],
+      "why": "mass 0.16 at travel cost 26"
+    },
+    {
+      "time": 32,
+      "position": [
+        14,
+        8
+      ],
+      "kind": "mode",
+      "to": "INVESTIGATE",
+      "why": "SEARCH -> INVESTIGATE: best target holds 46% of the belief within scan radius"
+    },
+    {
+      "time": 32,
+      "position": [
+        14,
+        8
+      ],
+      "kind": "target",
+      "to": [
+        26,
+        11
+      ],
+      "why": "mass 0.4622 at travel cost 15"
+    },
+    {
+      "time": 50,
+      "position": [
+        26,
+        11
+      ],
+      "kind": "target",
+      "to": [
+        28,
+        13
+      ],
+      "why": "mass 0.7516 at travel cost 4"
+    },
+    {
+      "time": 59,
+      "position": [
+        28,
+        13
+      ],
+      "kind": "mode",
+      "to": "RENDEZVOUS",
+      "why": "INVESTIGATE -> RENDEZVOUS: EVE confirmed at (29, 14)"
+    },
+    {
+      "time": 60,
+      "position": [
+        28,
+        14
+      ],
+      "kind": "mode",
+      "to": "DONE",
+      "why": "RENDEZVOUS -> DONE: reached EVE"
+    }
+  ],
+  "ground_truth": {
+    "eve_position": [
+      29,
+      14
+    ],
+    "eve_status": "damaged",
+    "clues": [
+      {
+        "type": "memory_chip",
+        "position": [
+          10,
+          6
+        ],
+        "found": false
+      },
+      {
+        "type": "hover_tracks",
+        "position": [
+          21,
+          9
+        ],
+        "found": false
+      },
+      {
+        "type": "debris",
+        "position": [
+          27,
+          12
+        ],
+        "found": true
+      },
+      {
+        "type": "hover_tracks",
+        "position": [
+          24,
+          15
+        ],
+        "found": false
+      }
+    ],
+    "decoys": [
+      {
+        "position": [
+          14,
+          11
+        ],
+        "power": 1.4,
+        "found": false
+      },
+      {
+        "position": [
+          5,
+          12
+        ],
+        "power": 1.2,
+        "found": false
+      }
+    ]
+  },
+  "evaluation": {
+    "location_error_cells": 0.0,
+    "status_correct": true,
+    "clues_found": 1,
+    "clues_total": 4,
+    "decoys_identified": 0,
+    "decoys_total": 2
+  }
+}

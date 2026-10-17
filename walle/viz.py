@@ -33,7 +33,7 @@ def ascii_map(briefing: dict[str, Any], path: list, clues: list, decoys: list, t
     if truth:
         for d in truth["decoys"]:
             x, y = d["position"]
-            rows[y][x] = "D" if d["found"] else "x"
+            rows[y][x] = "X" if d["found"] else "x"
         for c in truth["clues"]:
             x, y = c["position"]
             ch = CLUE_CHAR[c["type"]]
@@ -43,7 +43,7 @@ def ascii_map(briefing: dict[str, Any], path: list, clues: list, decoys: list, t
             x, y = c["position"]
             rows[y][x] = CLUE_CHAR[c["type"]].upper()
         for x, y in decoys:
-            rows[y][x] = "D"
+            rows[y][x] = "X"
     if inferred:
         rows[inferred[1]][inferred[0]] = "?"
     if truth:
@@ -55,7 +55,7 @@ def ascii_map(briefing: dict[str, Any], path: list, clues: list, decoys: list, t
     border = "+" + "-" * W + "+"
     body = [border] + ["|" + "".join(r) + "|" for r in rows] + [border]
     legend = ("W WALL-E  E EVE  ? inferred  S base  C charger  * path  # wall  ~ rubble  "
-              "T/D/P/M clue found (t/d/p/m missed)  D decoy found (x missed)  .:-=+*%@ belief")
+              "T/D/P/M clue found (t/d/p/m missed)  X decoy found (x missed)  .:-=+*%@ belief")
     return "\n".join(body + [legend])
 
 
@@ -141,7 +141,7 @@ def svg(result: dict[str, Any], cell: int = 18) -> str:
     for d in truth["decoys"]:
         x, y = d["position"]
         out.append(f'<text x="{x * cell + cell / 2}" y="{y * cell + cell * 0.72}" text-anchor="middle" '
-                   f'fill="{"#fb923c" if d["found"] else "#9a3412"}" font-weight="bold">D<title>decoy</title></text>')
+                   f'fill="{"#fb923c" if d["found"] else "#9a3412"}" font-weight="bold">X<title>decoy</title></text>')
     sx, sy = b["start"]
     out.append(f'<text x="{sx * cell + cell / 2}" y="{sy * cell + cell * 0.72}" text-anchor="middle" fill="#f8fafc" font-weight="bold">S</text>')
     ex, ey = truth["eve_position"]
@@ -160,7 +160,7 @@ def svg(result: dict[str, Any], cell: int = 18) -> str:
                    f'<text x="{pad + i * 110 + 18}" y="{ly - 4}" fill="#cbd5e1">{label}</text>')
     out.append(f'<text x="{pad}" y="{ly + 16}" fill="#cbd5e1">dots: beacon scans  amber boxes: strategy changes  '
                f'red: belief before sighting</text>')
-    out.append(f'<text x="{pad}" y="{ly + 32}" fill="#cbd5e1">T/D/P/M clues (grey = missed)  D decoy  E EVE  '
+    out.append(f'<text x="{pad}" y="{ly + 32}" fill="#cbd5e1">T/D/P/M clues (grey = missed)  X decoy  E EVE  '
                f'? inferred  C charger  S base</text>')
     out.append(f'<text x="{pad}" y="{ly + 50}" fill="#94a3b8">{html.escape(result["cfg"].name)}: outcome '
                f'{result["outcome"]}, t={env.time}, battery {env.battery:.0f}/{env.capacity:.0f}</text>')
@@ -207,7 +207,7 @@ function draw(){
  for(const c of D.chargers)cellText(c[0],c[1],'C','#eab308');
  ctx.lineWidth=4;ctx.lineCap='round';
  for(let k=1;k<=i;k++){const a=D.steps[k-1].pos,b=D.steps[k].pos;if(a[0]===b[0]&&a[1]===b[1])continue;ctx.strokeStyle=MODE[D.steps[k].mode]||'#3b82f6';ctx.beginPath();ctx.moveTo(a[0]*S+S/2,a[1]*S+S/2);ctx.lineTo(b[0]*S+S/2,b[1]*S+S/2);ctx.stroke()}
- for(let k=0;k<=i;k++){for(const c of D.steps[k].clues)cellText(c.position[0],c.position[1],c.type[0].toUpperCase(),'#0891b2');for(const d of D.steps[k].decoys)cellText(d[0],d[1],'D','#ea580c')}
+ for(let k=0;k<=i;k++){for(const c of D.steps[k].clues)cellText(c.position[0],c.position[1],c.type[0].toUpperCase(),'#0891b2');for(const d of D.steps[k].decoys)cellText(d[0],d[1],'X','#ea580c')}
  cellText(D.start[0],D.start[1],'S',css('--fg'));
  if(document.getElementById('truth').checked){const e=D.truth.eve_position;ctx.strokeStyle=css('--fg');ctx.lineWidth=2;ctx.beginPath();ctx.arc(e[0]*S+S/2,e[1]*S+S/2,S*0.42,0,7);ctx.stroke();cellText(e[0],e[1],'E',css('--fg'));for(const d of D.truth.decoys)cellText(d.position[0],d.position[1],'x','#9a3412')}
  if(st.target){ctx.strokeStyle='#a855f7';ctx.lineWidth=2;ctx.setLineDash([4,3]);ctx.strokeRect(st.target[0]*S+2,st.target[1]*S+2,S-5,S-5);ctx.setLineDash([])}
